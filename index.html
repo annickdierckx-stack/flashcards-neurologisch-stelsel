@@ -1,291 +1,1150 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcards test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 30px;
-      color: #222;
-    }
+<title>Flashcards – Het neurologisch stelsel</title>
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-    }
+<style>
 
-    h1 {
-      color: #2f6fa3;
-      text-align: center;
-    }
+:root {
+  --blue:#2f6fa3;
+  --blue-light:#eef5fb;
+  --blue-border:#c8d9e8;
+  --green:#4c9a52;
+  --green-light:#eef7ee;
+  --orange:#e39b3a;
+  --purple:#6c63a8;
+  --text:#222;
+  --muted:#667085;
+  --background:#f5f7fa;
+}
 
-    .card {
-      background: white;
-      border: 2px solid #c8d9e8;
-      border-radius: 16px;
-      padding: 30px;
-      margin-top: 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+* {
+  box-sizing:border-box;
+}
 
-    .question {
-      font-size: 1.4em;
-      font-weight: bold;
-      margin-bottom: 25px;
-    }
+body {
+  margin:0;
+  padding:20px;
+  font-family:Arial, Helvetica, sans-serif;
+  background:var(--background);
+  color:var(--text);
+  line-height:1.5;
+}
 
-    .answer {
-      display: none;
-      background: #eef7ee;
-      border-left: 5px solid #4c9a52;
-      padding: 18px;
-      margin: 20px 0;
-      border-radius: 8px;
-    }
+.container {
+  max-width:820px;
+  margin:0 auto;
+}
 
-    button {
-      padding: 12px 18px;
-      margin: 8px 5px 0 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1em;
-      cursor: pointer;
-    }
+/* HEADER */
 
-    .show {
-      background: #6c63a8;
-      color: white;
-    }
+.header {
+  text-align:center;
+  margin-bottom:22px;
+}
 
-    .know {
-      background: #4c9a52;
-      color: white;
-    }
+.header h1 {
+  color:var(--blue);
+  margin:0 0 6px 0;
+  font-size:2rem;
+}
 
-    .again {
-      background: #e39b3a;
-      color: white;
-    }
+.header p {
+  margin:0;
+  color:var(--muted);
+}
 
-    .progress {
-      margin-top: 15px;
-      color: #555;
-      text-align: center;
-    }
+/* STARTSCHERM */
 
-    .result {
-      display: none;
-      background: white;
-      border: 2px solid #c8d9e8;
-      border-radius: 16px;
-      padding: 30px;
-      margin-top: 25px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-  </style>
+.start-panel {
+  background:white;
+  border:2px solid var(--blue-border);
+  border-radius:16px;
+  padding:26px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
+}
+
+.start-panel h2 {
+  color:var(--blue);
+  margin-top:0;
+}
+
+.tip {
+  background:var(--blue-light);
+  border-left:5px solid var(--blue);
+  padding:14px 16px;
+  border-radius:8px;
+  margin:18px 0 22px 0;
+}
+
+.set-buttons {
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:12px;
+}
+
+.set-button {
+  border:2px solid var(--blue-border);
+  background:white;
+  color:var(--blue);
+  border-radius:10px;
+  padding:15px;
+  font-size:1rem;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.set-button:hover {
+  background:var(--blue-light);
+  transform:translateY(-1px);
+}
+
+.set-button.all {
+  grid-column:1 / -1;
+  background:var(--blue);
+  color:white;
+  border-color:var(--blue);
+}
+
+/* FLASHCARD */
+
+.study-area {
+  display:none;
+}
+
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.chapter-label {
+  display:inline-block;
+  background:var(--blue-light);
+  color:var(--blue);
+  border-radius:20px;
+  padding:6px 12px;
+  font-size:.9rem;
+  font-weight:bold;
+}
+
+.counter {
+  color:var(--muted);
+  font-size:.95rem;
+}
+
+.progress-track {
+  width:100%;
+  height:8px;
+  background:#e5e7eb;
+  border-radius:8px;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+
+.progress-bar {
+  height:100%;
+  width:0;
+  background:var(--blue);
+  transition:width .2s ease;
+}
+
+.card {
+  background:white;
+  border:2px solid var(--blue-border);
+  border-radius:16px;
+  padding:30px;
+  box-shadow:0 4px 12px rgba(0,0,0,.07);
+}
+
+.question {
+  font-size:1.35rem;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+
+.answer {
+  display:none;
+  background:var(--green-light);
+  border-left:5px solid var(--green);
+  padding:18px;
+  border-radius:8px;
+  margin:20px 0;
+}
+
+.answer strong {
+  color:#286c31;
+}
+
+.actions {
+  margin-top:18px;
+}
+
+button {
+  font-family:inherit;
+}
+
+.action-button {
+  padding:12px 18px;
+  margin:6px 5px 0 0;
+  border:none;
+  border-radius:9px;
+  font-size:1rem;
+  cursor:pointer;
+}
+
+.show-answer {
+  background:var(--purple);
+  color:white;
+}
+
+.know {
+  background:var(--green);
+  color:white;
+}
+
+.again {
+  background:var(--orange);
+  color:white;
+}
+
+.secondary {
+  background:#e8edf2;
+  color:#333;
+}
+
+.rate-buttons {
+  display:none;
+}
+
+/* RESULTAAT */
+
+.result-panel {
+  display:none;
+  text-align:center;
+  background:white;
+  border:2px solid var(--blue-border);
+  border-radius:16px;
+  padding:30px;
+  box-shadow:0 4px 12px rgba(0,0,0,.07);
+}
+
+.result-number {
+  font-size:1.7rem;
+  color:var(--blue);
+  font-weight:bold;
+}
+
+.result-message {
+  margin:10px 0 22px;
+}
+
+/* MOBIEL */
+
+@media (max-width:600px) {
+
+  body {
+    padding:12px;
+  }
+
+  .header h1 {
+    font-size:1.55rem;
+  }
+
+  .card,
+  .start-panel,
+  .result-panel {
+    padding:20px;
+  }
+
+  .question {
+    font-size:1.15rem;
+  }
+
+  .set-buttons {
+    grid-template-columns:1fr;
+  }
+
+  .set-button.all {
+    grid-column:auto;
+  }
+
+  .topbar {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .action-button {
+    width:100%;
+    margin:6px 0;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>Flashcards – test</h1>
+  <div class="header">
+    <h1>Oefenkaartjes</h1>
+    <p>Hoofdstuk 1, 2 en 3 – Het neurologisch stelsel</p>
+  </div>
 
-  <!-- FLASHCARD -->
-  <div id="card" class="card">
+  <!-- STARTSCHERM -->
 
-    <div id="question" class="question"></div>
+  <div id="startPanel" class="start-panel">
 
-    <button id="showButton" class="show" onclick="showAnswer()">
-      Toon antwoord
-    </button>
+    <h2>Wat wil je oefenen?</h2>
 
-    <div id="answer" class="answer"></div>
+    <p>
+      Denk eerst zelf na. Toon daarna het antwoord en geef eerlijk aan
+      of je het antwoord wist.
+    </p>
 
-    <div id="rateButtons" style="display:none;">
-      <button class="know" onclick="rateCard(true)">
-        ✓ Ik wist het
+    <div class="tip">
+      <strong>Studietip:</strong>
+      een antwoord niet weten is geen probleem.
+      Kies <strong>Nog oefenen</strong>. Op het einde kan je alleen
+      deze kaarten opnieuw bekijken.
+    </div>
+
+    <div class="set-buttons">
+
+      <button class="set-button all"
+              onclick="startSet('alles')">
+        Alles oefenen
       </button>
 
-      <button class="again" onclick="rateCard(false)">
-        ↻ Nog oefenen
+      <button class="set-button"
+              onclick="startSet('H1')">
+        Hoofdstuk 1<br>
+        <small>Inleiding</small>
+      </button>
+
+      <button class="set-button"
+              onclick="startSet('H2')">
+        Hoofdstuk 2<br>
+        <small>Anatomie</small>
+      </button>
+
+      <button class="set-button"
+              onclick="startSet('H3')">
+        Hoofdstuk 3<br>
+        <small>Werking</small>
+      </button>
+
+      <button class="set-button"
+              onclick="startSet('P')">
+        Praktijk<br>
+        <small>Observeren en toepassen</small>
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- STUDIEGEBIED -->
+
+  <div id="studyArea" class="study-area">
+
+    <div class="topbar">
+
+      <span id="chapterLabel"
+            class="chapter-label"></span>
+
+      <span id="counter"
+            class="counter"></span>
+
+    </div>
+
+    <div class="progress-track">
+      <div id="progressBar"
+           class="progress-bar"></div>
+    </div>
+
+    <div class="card">
+
+      <div id="question"
+           class="question"></div>
+
+      <button id="showButton"
+              class="action-button show-answer"
+              onclick="showAnswer()">
+        Toon antwoord
+      </button>
+
+      <div id="answer"
+           class="answer"></div>
+
+      <div id="rateButtons"
+           class="rate-buttons">
+
+        <button class="action-button know"
+                onclick="rateCard(true)">
+          ✓ Ik wist het
+        </button>
+
+        <button class="action-button again"
+                onclick="rateCard(false)">
+          ↻ Nog oefenen
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button class="action-button secondary"
+              onclick="backToMenu()">
+        ← Andere reeks kiezen
       </button>
     </div>
 
   </div>
 
-  <!-- VOORTGANG -->
-  <div id="progress" class="progress"></div>
 
-  <!-- EINDSCHERM -->
-  <div id="result" class="result">
+  <!-- RESULTAAT -->
+
+  <div id="resultPanel"
+       class="result-panel">
 
     <h2>Klaar! 🎉</h2>
 
-    <p id="resultText"></p>
+    <div id="resultNumber"
+         class="result-number"></div>
+
+    <p id="resultMessage"
+       class="result-message"></p>
 
     <button id="difficultButton"
-            class="again"
+            class="action-button again"
             onclick="restartDifficult()">
       Oefen moeilijke kaarten opnieuw
     </button>
 
-    <button class="show"
-            onclick="restartAll()">
-      Alle kaarten opnieuw
+    <button class="action-button show-answer"
+            onclick="restartCurrentSet()">
+      Alle kaarten van deze reeks opnieuw
+    </button>
+
+    <button class="action-button secondary"
+            onclick="backToMenu()">
+      Andere reeks kiezen
     </button>
 
   </div>
 
 </div>
 
+
 <script>
 
-const originalCards = [
-  {
-    question: "Waaruit bestaat het centraal zenuwstelsel?",
-    answer: "Uit de hersenen en het ruggenmerg."
-  },
-  {
-    question: "Wat doen dendrieten?",
-    answer: "Dendrieten ontvangen informatie."
-  },
-  {
-    question: "Wat betekent sympathisch?",
-    answer: "Sympathisch betekent vooral actie en inspanning."
-  }
+/* ======================================================
+   FLASHCARDS
+   ====================================================== */
+
+const allCards = [
+
+/* -------------------------
+   HOOFDSTUK 1
+   ------------------------- */
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Wat is het neurologisch stelsel?",
+answer:"Het geheel van de <strong>hersenen, het ruggenmerg en alle zenuwen</strong>."
+},
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Wat zijn drie belangrijke taken van het neurologisch stelsel?",
+answer:"Het neurologisch stelsel <strong>ontvangt informatie, verwerkt informatie en stuurt opdrachten naar het lichaam</strong>."
+},
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Wat is een prikkel?",
+answer:"Een prikkel is <strong>informatie die je lichaam ontvangt</strong>, bijvoorbeeld een geluid, aanraking of warmte."
+},
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Wat is een reactie?",
+answer:"Een reactie is <strong>de manier waarop je lichaam antwoordt op een prikkel</strong>."
+},
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Op welke vier soorten veranderingen let je bij mogelijke neurologische problemen?",
+answer:"Let onder andere op veranderingen in <strong>bewegen, denken en onthouden, communicatie, gedrag en emoties</strong>."
+},
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Wat betekent objectief observeren?",
+answer:"Je beschrijft <strong>wat je ziet en hoort</strong>, niet wat je denkt of veronderstelt."
+},
+
+{
+chapter:"H1",
+label:"Hoofdstuk 1 – Inleiding",
+question:"Stelt een zorgkundige zelf een neurologische diagnose?",
+answer:"<strong>Nee.</strong> De zorgkundige observeert veranderingen en rapporteert deze correct aan de verpleegkundige."
+},
+
+
+/* -------------------------
+   HOOFDSTUK 2
+   ------------------------- */
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Uit welke twee grote delen bestaat het neurologisch stelsel?",
+answer:"Uit het <strong>centraal zenuwstelsel (CZS)</strong> en het <strong>perifeer zenuwstelsel (PZS)</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Waaruit bestaat het centraal zenuwstelsel (CZS)?",
+answer:"Uit de <strong>hersenen en het ruggenmerg</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat doet het centraal zenuwstelsel vooral?",
+answer:"Het CZS <strong>verwerkt informatie en stuurt het lichaam aan</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat is het perifeer zenuwstelsel (PZS)?",
+answer:"Het PZS bestaat uit <strong>alle zenuwen buiten de hersenen en het ruggenmerg</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat is de belangrijkste taak van het PZS?",
+answer:"Het PZS <strong>verbindt het centraal zenuwstelsel met de rest van het lichaam</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke twee groepen zenuwen behoren tot het PZS?",
+answer:"De <strong>hersenzenuwen</strong> en de <strong>ruggenmergzenuwen</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat zijn de drie grote onderdelen van de hersenen die je moet kennen?",
+answer:"De <strong>grote hersenen, kleine hersenen en hersenstam</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke functies horen vooral bij de grote hersenen?",
+answer:"Onder andere <strong>waarnemen, denken, leren, geheugen, taal, emoties, gedrag en bewuste bewegingen</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat doen de kleine hersenen?",
+answer:"Ze helpen bij <strong>coördinatie van bewegingen, evenwicht, houding en fijne motoriek</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Starten de kleine hersenen zelf een bewuste beweging?",
+answer:"<strong>Nee.</strong> Ze helpen ervoor zorgen dat bewegingen correct, nauwkeurig en vloeiend verlopen."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat zijn twee belangrijke taken van de hersenstam?",
+answer:"De hersenstam <strong>verbindt de hersenen met het ruggenmerg</strong> en helpt belangrijke <strong>automatische functies</strong> regelen."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke automatische functies worden onder andere door de hersenstam geregeld?",
+answer:"Onder andere <strong>ademhaling, hartslag en bloeddruk</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat zijn twee belangrijke taken van het ruggenmerg?",
+answer:"Het ruggenmerg <strong>geleidt zenuwprikkels van en naar de hersenen</strong> en speelt een belangrijke rol bij <strong>reflexen</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke vier hersenkwabben moet je kennen?",
+answer:"De <strong>frontale, pariëtale, temporale en occipitale kwab</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke functies horen vooral bij de frontale kwab?",
+answer:"Onder andere <strong>denken, plannen, beslissingen nemen, persoonlijkheid, gedrag, emoties en bewuste bewegingen</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke informatie verwerkt de pariëtale kwab onder andere?",
+answer:"Informatie uit huid en spieren, zoals <strong>aanraking, pijn, temperatuur en de positie van het lichaam</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Welke functies horen vooral bij de temporale kwab?",
+answer:"Onder andere <strong>gehoor, taalbegrip, geheugen en herkenning</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Wat doet de occipitale kwab vooral?",
+answer:"De occipitale kwab <strong>verwerkt informatie die via de ogen binnenkomt</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Waar vertrekken de hersenzenuwen?",
+answer:"Ze vertrekken <strong>rechtstreeks uit de hersenen</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Hoeveel paar hersenzenuwen zijn er?",
+answer:"Er zijn <strong>12 paar hersenzenuwen</strong>. Je hoeft hun afzonderlijke namen niet uit het hoofd te kennen."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Waar vertrekken de ruggenmergzenuwen?",
+answer:"De ruggenmergzenuwen vertrekken uit het <strong>ruggenmerg</strong>."
+},
+
+{
+chapter:"H2",
+label:"Hoofdstuk 2 – Anatomie",
+question:"Hoeveel paar ruggenmergzenuwen zijn er?",
+answer:"Er zijn <strong>31 paar ruggenmergzenuwen</strong>."
+},
+
+
+/* -------------------------
+   HOOFDSTUK 3
+   ------------------------- */
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is een zenuwcel of neuron?",
+answer:"Een zenuwcel is een cel die gespecialiseerd is in het <strong>ontvangen en doorgeven van informatie</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat doen dendrieten?",
+answer:"Dendrieten <strong>ontvangen informatie</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat bevindt zich in het cellichaam van een zenuwcel?",
+answer:"Het cellichaam bevat onder andere de <strong>celkern</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat doet het axon?",
+answer:"Het axon <strong>geleidt de zenuwprikkel weg van het cellichaam</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat doet de myelineschede?",
+answer:"De myelineschede <strong>isoleert het axon</strong> en helpt zenuwprikkels <strong>sneller te geleiden</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is een zenuwprikkel?",
+answer:"Een zenuwprikkel is een <strong>elektrisch signaal</strong> waarmee informatie door een zenuwcel wordt voortgeleid."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is de globale richting waarin informatie door een zenuwcel loopt?",
+answer:"<strong>Dendrieten → cellichaam → axon</strong> en daarna verder richting de volgende cel."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is een synaps?",
+answer:"De synaps is de <strong>plaats waar informatie van een zenuwcel wordt doorgegeven aan een andere cel</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is de synapsspleet?",
+answer:"De synapsspleet is de <strong>zeer kleine ruimte tussen twee cellen ter hoogte van een synaps</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is een neurotransmitter?",
+answer:"Een neurotransmitter is een <strong>chemische boodschapperstof</strong> die helpt informatie van de ene cel naar de volgende door te geven."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Hoe verandert de boodschap wanneer ze van de ene zenuwcel naar de volgende gaat?",
+answer:"In grote lijnen: <strong>elektrisch → chemisch → elektrisch</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Moet je als zorgkundige de werking van alle neurotransmitters uit het hoofd kennen?",
+answer:"<strong>Nee.</strong> Je moet vooral begrijpen dat verstoring van boodschapperstoffen gevolgen kan hebben voor het functioneren van een persoon."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Welke vier neurotransmitters worden in de cursus als voorbeeld genoemd?",
+answer:"<strong>Dopamine, serotonine, acetylcholine en noradrenaline.</strong>"
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Welke weg kan informatie volgen van prikkel tot reactie?",
+answer:"<strong>Prikkel → receptor → sensorische zenuw → CZS → motorische zenuw → spier of orgaan → reactie.</strong>"
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat betekent sensorisch?",
+answer:"Sensorisch betekent: <strong>informatie naar het CZS</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat betekent motorisch?",
+answer:"Motorisch betekent: <strong>opdracht vanuit het CZS naar het lichaam</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Eindigt een motorische opdracht altijd bij een spier?",
+answer:"<strong>Nee.</strong> Het zenuwstelsel kan ook organen en klieren aansturen."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat is een reflex?",
+answer:"Een reflex is een <strong>snelle, automatische reactie op een prikkel</strong>, zonder dat je er eerst bewust over nadenkt."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Welke rol kan het ruggenmerg spelen bij een eenvoudige terugtrekreflex?",
+answer:"Het ruggenmerg kan de <strong>snelle beschermende reactie in gang zetten</strong> zonder te wachten op een bewuste beslissing van de hersenen."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Gaat informatie bij een terugtrekreflex ook naar de hersenen?",
+answer:"<strong>Ja.</strong> De informatie wordt ook naar de hersenen gestuurd. Daar wordt de prikkel verder verwerkt en word je je bewust van wat er gebeurt."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat doet het somatische zenuwstelsel?",
+answer:"Het speelt een belangrijke rol bij <strong>bewuste waarneming</strong> en het <strong>bewust aansturen van skeletspieren</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Wat doet het autonome zenuwstelsel?",
+answer:"Het autonome zenuwstelsel <strong>regelt veel lichaamsfuncties automatisch</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Welke functies worden onder andere autonoom geregeld?",
+answer:"Onder andere <strong>hartslag, bloeddruk, spijsvertering, pupilgrootte en de werking van verschillende klieren</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Waarmee verbind je het sympathische zenuwstelsel?",
+answer:"Met <strong>actie en inspanning</strong>."
+},
+
+{
+chapter:"H3",
+label:"Hoofdstuk 3 – Werking",
+question:"Waarmee verbind je het parasympathische zenuwstelsel?",
+answer:"Met <strong>rust en herstel</strong>."
+},
+
+
+/* -------------------------
+   PRAKTIJK / TRANSFER
+   ------------------------- */
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Een zorgvrager laat tijdens het ontbijt twee keer zijn lepel uit de rechterhand vallen. Wat doe je als zorgkundige?",
+answer:"Je <strong>observeert wat er gebeurt en rapporteert dit objectief</strong> volgens de afspraken. Je stelt zelf geen diagnose."
+},
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Een zorgvrager zoekt plots meer naar woorden dan gewoonlijk. Is dit alleen een bewegingsprobleem?",
+answer:"<strong>Nee.</strong> Neurologische veranderingen kunnen ook zichtbaar worden in communicatie, denken, geheugen, gedrag of emoties."
+},
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Je stapt onverwacht op een scherp voorwerp en trekt je voet onmiddellijk terug. Welk principe herken je?",
+answer:"Een <strong>terugtrekreflex</strong>. Het ruggenmerg kan de snelle beschermende reactie in gang zetten."
+},
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Je hoort plots een harde knal. Je hartslag versnelt en je begint meer te zweten. Welk deel van het autonome zenuwstelsel is vooral actief?",
+answer:"Het <strong>sympathische zenuwstelsel</strong>: actie en inspanning."
+},
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Na een inspanning komt je lichaam weer tot rust. Welk deel van het autonome zenuwstelsel is vooral belangrijk?",
+answer:"Het <strong>parasympathische zenuwstelsel</strong>: rust en herstel."
+},
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Een zorgvrager heeft moeite met slikken en spreken en zijn mond staat scheef. Wat is jouw taak als zorgkundige?",
+answer:"De veranderingen <strong>zorgvuldig observeren en correct rapporteren</strong>. Je bepaalt niet zelf de oorzaak."
+},
+
+{
+chapter:"P",
+label:"Praktijk",
+question:"Een zorgvrager ademt sneller dan voordien en zegt: ‘Mijn hart klopt heel snel.’ Hoe rapporteer je dit best?",
+answer:"Beschrijf <strong>wat je observeert én wat de zorgvrager zelf zegt</strong>, zonder zelf de oorzaak te bepalen."
+}
+
 ];
 
-let cards = [];
+
+/* ======================================================
+   PROGRAMMA
+   ====================================================== */
+
+let currentCards = [];
 let difficultCards = [];
 let index = 0;
 let known = 0;
+let currentSet = "alles";
 
 
-/* Willekeurige volgorde */
 function shuffle(array) {
+
   const copy = [...array];
 
   for (let i = copy.length - 1; i > 0; i--) {
+
     const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+
+    [copy[i], copy[j]] =
+      [copy[j], copy[i]];
+
   }
 
   return copy;
 }
 
 
-/* Nieuwe ronde starten */
-function startRound(cardsToUse) {
+function selectCards(set) {
 
-  cards = shuffle(cardsToUse);
+  if (set === "alles") {
+    return [...allCards];
+  }
 
-  index = 0;
-  known = 0;
-  difficultCards = [];
-
-  document.getElementById("result").style.display = "none";
-  document.getElementById("card").style.display = "block";
-
-  showCard();
+  return allCards.filter(card =>
+    card.chapter === set
+  );
 }
 
 
-/* Kaart tonen */
+function startSet(set) {
+
+  currentSet = set;
+
+  const selected =
+    selectCards(set);
+
+  startRound(selected);
+
+}
+
+
+function startRound(cards) {
+
+  currentCards =
+    shuffle([...cards]);
+
+  difficultCards = [];
+  index = 0;
+  known = 0;
+
+  document.getElementById("startPanel")
+    .style.display = "none";
+
+  document.getElementById("resultPanel")
+    .style.display = "none";
+
+  document.getElementById("studyArea")
+    .style.display = "block";
+
+  showCard();
+
+}
+
+
 function showCard() {
 
-  if (index >= cards.length) {
+  if (index >= currentCards.length) {
     showResult();
     return;
   }
 
-  document.getElementById("question").innerText =
-    cards[index].question;
+  const card =
+    currentCards[index];
 
-  document.getElementById("answer").innerText =
-    cards[index].answer;
+  document.getElementById("chapterLabel")
+    .textContent = card.label;
 
-  document.getElementById("answer").style.display = "none";
-  document.getElementById("rateButtons").style.display = "none";
-  document.getElementById("showButton").style.display = "inline-block";
+  document.getElementById("question")
+    .textContent = card.question;
 
-  document.getElementById("progress").innerText =
-    "Kaart " + (index + 1) + " van " + cards.length;
+  document.getElementById("answer")
+    .innerHTML = card.answer;
+
+  document.getElementById("counter")
+    .textContent =
+      "Kaart " +
+      (index + 1) +
+      " van " +
+      currentCards.length;
+
+  const progress =
+    ((index) / currentCards.length) * 100;
+
+  document.getElementById("progressBar")
+    .style.width =
+      progress + "%";
+
+  document.getElementById("answer")
+    .style.display = "none";
+
+  document.getElementById("rateButtons")
+    .style.display = "none";
+
+  document.getElementById("showButton")
+    .style.display = "inline-block";
+
 }
 
 
-/* Antwoord tonen */
 function showAnswer() {
 
-  document.getElementById("answer").style.display = "block";
-  document.getElementById("rateButtons").style.display = "block";
-  document.getElementById("showButton").style.display = "none";
+  document.getElementById("answer")
+    .style.display = "block";
+
+  document.getElementById("rateButtons")
+    .style.display = "block";
+
+  document.getElementById("showButton")
+    .style.display = "none";
+
 }
 
 
-/* Cursist beoordeelt zichzelf */
 function rateCard(knewIt) {
 
   if (knewIt) {
     known++;
-  } else {
-    difficultCards.push(cards[index]);
+  }
+
+  else {
+    difficultCards.push(
+      currentCards[index]
+    );
   }
 
   index++;
   showCard();
+
 }
 
 
-/* Eindresultaat */
 function showResult() {
 
-  document.getElementById("card").style.display = "none";
-  document.getElementById("progress").innerText = "";
-  document.getElementById("result").style.display = "block";
+  document.getElementById("studyArea")
+    .style.display = "none";
 
-  document.getElementById("resultText").innerHTML =
-    "Je kende <strong>" +
-    known +
-    " van de " +
-    cards.length +
-    "</strong> kaarten.";
+  document.getElementById("resultPanel")
+    .style.display = "block";
+
+  const total =
+    currentCards.length;
+
+  document.getElementById("resultNumber")
+    .textContent =
+      known + " van de " + total;
+
+  let message = "";
+
+  const percentage =
+    total === 0
+    ? 0
+    : (known / total) * 100;
+
+  if (percentage === 100) {
+
+    message =
+      "Je kende alle kaarten. Sterk!";
+
+  }
+
+  else if (percentage >= 75) {
+
+    message =
+      "Veel leerstof zit al goed. Herhaal vooral de kaarten die nog moeilijk waren.";
+
+  }
+
+  else {
+
+    message =
+      "Er zijn nog enkele begrippen om opnieuw te bekijken. Gebruik je cursus en probeer daarna opnieuw.";
+
+  }
+
+  document.getElementById("resultMessage")
+    .textContent = message;
 
   const difficultButton =
-    document.getElementById("difficultButton");
+    document.getElementById(
+      "difficultButton"
+    );
 
-  if (difficultCards.length > 0) {
-    difficultButton.style.display = "inline-block";
-  } else {
-    difficultButton.style.display = "none";
-  }
+  difficultButton.style.display =
+    difficultCards.length > 0
+    ? "inline-block"
+    : "none";
+
 }
 
 
-/* Alleen moeilijke kaarten opnieuw */
 function restartDifficult() {
 
-  const cardsToRepeat = [...difficultCards];
+  const repeat =
+    [...difficultCards];
 
-  startRound(cardsToRepeat);
+  startRound(repeat);
+
 }
 
 
-/* Alle kaarten opnieuw */
-function restartAll() {
+function restartCurrentSet() {
 
-  startRound([...originalCards]);
+  startRound(
+    selectCards(currentSet)
+  );
+
 }
 
 
-/* Eerste ronde starten */
-startRound([...originalCards]);
+function backToMenu() {
+
+  document.getElementById("studyArea")
+    .style.display = "none";
+
+  document.getElementById("resultPanel")
+    .style.display = "none";
+
+  document.getElementById("startPanel")
+    .style.display = "block";
+
+}
 
 </script>
 
