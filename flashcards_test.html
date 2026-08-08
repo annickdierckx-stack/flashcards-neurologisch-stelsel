@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards test</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 30px;
+      color: #222;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #2f6fa3;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #c8d9e8;
+      border-radius: 16px;
+      padding: 30px;
+      margin-top: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .question {
+      font-size: 1.4em;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .answer {
+      display: none;
+      background: #eef7ee;
+      border-left: 5px solid #4c9a52;
+      padding: 18px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin: 8px 5px 0 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    .show {
+      background: #6c63a8;
+      color: white;
+    }
+
+    .know {
+      background: #4c9a52;
+      color: white;
+    }
+
+    .again {
+      background: #e39b3a;
+      color: white;
+    }
+
+    .progress {
+      margin-top: 15px;
+      color: #555;
+      text-align: center;
+    }
+
+    .result {
+      display: none;
+      background: white;
+      border: 2px solid #c8d9e8;
+      border-radius: 16px;
+      padding: 30px;
+      margin-top: 25px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Flashcards – test</h1>
+
+  <!-- FLASHCARD -->
+  <div id="card" class="card">
+
+    <div id="question" class="question"></div>
+
+    <button id="showButton" class="show" onclick="showAnswer()">
+      Toon antwoord
+    </button>
+
+    <div id="answer" class="answer"></div>
+
+    <div id="rateButtons" style="display:none;">
+      <button class="know" onclick="rateCard(true)">
+        ✓ Ik wist het
+      </button>
+
+      <button class="again" onclick="rateCard(false)">
+        ↻ Nog oefenen
+      </button>
+    </div>
+
+  </div>
+
+  <!-- VOORTGANG -->
+  <div id="progress" class="progress"></div>
+
+  <!-- EINDSCHERM -->
+  <div id="result" class="result">
+
+    <h2>Klaar! 🎉</h2>
+
+    <p id="resultText"></p>
+
+    <button id="difficultButton"
+            class="again"
+            onclick="restartDifficult()">
+      Oefen moeilijke kaarten opnieuw
+    </button>
+
+    <button class="show"
+            onclick="restartAll()">
+      Alle kaarten opnieuw
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+const originalCards = [
+  {
+    question: "Waaruit bestaat het centraal zenuwstelsel?",
+    answer: "Uit de hersenen en het ruggenmerg."
+  },
+  {
+    question: "Wat doen dendrieten?",
+    answer: "Dendrieten ontvangen informatie."
+  },
+  {
+    question: "Wat betekent sympathisch?",
+    answer: "Sympathisch betekent vooral actie en inspanning."
+  }
+];
+
+let cards = [];
+let difficultCards = [];
+let index = 0;
+let known = 0;
+
+
+/* Willekeurige volgorde */
+function shuffle(array) {
+  const copy = [...array];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+
+  return copy;
+}
+
+
+/* Nieuwe ronde starten */
+function startRound(cardsToUse) {
+
+  cards = shuffle(cardsToUse);
+
+  index = 0;
+  known = 0;
+  difficultCards = [];
+
+  document.getElementById("result").style.display = "none";
+  document.getElementById("card").style.display = "block";
+
+  showCard();
+}
+
+
+/* Kaart tonen */
+function showCard() {
+
+  if (index >= cards.length) {
+    showResult();
+    return;
+  }
+
+  document.getElementById("question").innerText =
+    cards[index].question;
+
+  document.getElementById("answer").innerText =
+    cards[index].answer;
+
+  document.getElementById("answer").style.display = "none";
+  document.getElementById("rateButtons").style.display = "none";
+  document.getElementById("showButton").style.display = "inline-block";
+
+  document.getElementById("progress").innerText =
+    "Kaart " + (index + 1) + " van " + cards.length;
+}
+
+
+/* Antwoord tonen */
+function showAnswer() {
+
+  document.getElementById("answer").style.display = "block";
+  document.getElementById("rateButtons").style.display = "block";
+  document.getElementById("showButton").style.display = "none";
+}
+
+
+/* Cursist beoordeelt zichzelf */
+function rateCard(knewIt) {
+
+  if (knewIt) {
+    known++;
+  } else {
+    difficultCards.push(cards[index]);
+  }
+
+  index++;
+  showCard();
+}
+
+
+/* Eindresultaat */
+function showResult() {
+
+  document.getElementById("card").style.display = "none";
+  document.getElementById("progress").innerText = "";
+  document.getElementById("result").style.display = "block";
+
+  document.getElementById("resultText").innerHTML =
+    "Je kende <strong>" +
+    known +
+    " van de " +
+    cards.length +
+    "</strong> kaarten.";
+
+  const difficultButton =
+    document.getElementById("difficultButton");
+
+  if (difficultCards.length > 0) {
+    difficultButton.style.display = "inline-block";
+  } else {
+    difficultButton.style.display = "none";
+  }
+}
+
+
+/* Alleen moeilijke kaarten opnieuw */
+function restartDifficult() {
+
+  const cardsToRepeat = [...difficultCards];
+
+  startRound(cardsToRepeat);
+}
+
+
+/* Alle kaarten opnieuw */
+function restartAll() {
+
+  startRound([...originalCards]);
+}
+
+
+/* Eerste ronde starten */
+startRound([...originalCards]);
+
+</script>
+
+</body>
+</html>
